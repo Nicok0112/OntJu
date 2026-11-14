@@ -1,0 +1,130 @@
+{
+  "fuente": {
+    "ordenamiento": "LFPIORPI",
+    "articulo": "17-VIII / 32-II",
+    "fraccion": "VIII",
+    "jerarquia": "04_LEY_FEDERAL",
+    "jurisdiccion": "FEDERAL",
+    "vigente_desde": "2026-02-01",
+    "vigente_hasta": null
+  },
+  "reglas": [
+    {
+      "rule_id": "LFPIORPI_17_F8_IDENTIFICACION",
+      "descripcion": "Comercialización de vehículos >= 3,210 UMA ($376,565 MXN sin IVA) obliga a identificar al cliente y conservar expediente 10 años",
+      "modalidad": "OBLIGATION",
+      "sujeto_activo": "?op",
+      "sujeto_pasivo": "?uif",
+      "condiciones_and": [
+        {
+          "sujeto": "?op",
+          "propiedad": "rdf:type",
+          "operador": "==",
+          "valor": "pld:OperacionComercial"
+        },
+        {
+          "sujeto": "?op",
+          "propiedad": "pld:giroActividad",
+          "operador": "==",
+          "valor": "COMERCIALIZACION_VEHICULOS"
+        },
+        {
+          "sujeto": "?op",
+          "propiedad": "pld:montoSinIvaMXN",
+          "operador": ">=",
+          "valor": 376565,
+          "unidad": "MXN"
+        }
+      ],
+      "excepciones_unless": [],
+      "consecuencia": {
+        "sujeto": "?op",
+        "propiedad": "pld:requiereIdentificacionKYC",
+        "operador": "==",
+        "valor": true
+      },
+      "anula_reglas": [],
+      "evento_automatizacion": "INTEGRAR_EXPEDIENTE_KYC_10_ANOS"
+    },
+    {
+      "rule_id": "LFPIORPI_17_F8_AVISO_UIF",
+      "descripcion": "Comercialización de vehículos >= 6,420 UMA ($753,130 MXN sin IVA) obliga a presentar Aviso ante la SHCP/UIF a más tardar el día 17 del mes siguiente",
+      "modalidad": "OBLIGATION",
+      "sujeto_activo": "?op",
+      "sujeto_pasivo": "?uif",
+      "condiciones_and": [
+        {
+          "sujeto": "?op",
+          "propiedad": "rdf:type",
+          "operador": "==",
+          "valor": "pld:OperacionComercial"
+        },
+        {
+          "sujeto": "?op",
+          "propiedad": "pld:giroActividad",
+          "operador": "==",
+          "valor": "COMERCIALIZACION_VEHICULOS"
+        },
+        {
+          "sujeto": "?op",
+          "propiedad": "pld:montoSinIvaMXN",
+          "operador": ">=",
+          "valor": 753130,
+          "unidad": "MXN"
+        }
+      ],
+      "excepciones_unless": [],
+      "consecuencia": {
+        "sujeto": "?op",
+        "propiedad": "pld:requiereAvisoUIF",
+        "operador": "==",
+        "valor": true
+      },
+      "anula_reglas": [],
+      "evento_automatizacion": "PROGRAMAR_AVISO_UIF_DIA_17"
+    },
+    {
+      "rule_id": "LFPIORPI_32_F2_PROHIBICION_EFECTIVO",
+      "descripcion": "Se prohíbe liquidar en efectivo operaciones de vehículos cuyo monto total con IVA supere 3,210 UMA ($376,565 MXN)",
+      "modalidad": "PROHIBITION",
+      "sujeto_activo": "?op",
+      "sujeto_pasivo": "?uif",
+      "condiciones_and": [
+        {
+          "sujeto": "?op",
+          "propiedad": "rdf:type",
+          "operador": "==",
+          "valor": "pld:OperacionComercial"
+        },
+        {
+          "sujeto": "?op",
+          "propiedad": "pld:giroActividad",
+          "operador": "==",
+          "valor": "COMERCIALIZACION_VEHICULOS"
+        },
+        {
+          "sujeto": "?op",
+          "propiedad": "pld:formaPagoSAT",
+          "operador": "==",
+          "valor": "01"
+        },
+        {
+          "sujeto": "?op",
+          "propiedad": "pld:montoTotalConIvaMXN",
+          "operador": ">=",
+          "valor": 376566,
+          "unidad": "MXN"
+        }
+      ],
+      "excepciones_unless": [],
+      "consecuencia": {
+        "sujeto": "?op",
+        "propiedad": "pld:operacionProhibidaEfectivo",
+        "operador": "==",
+        "valor": true
+      },
+      "anula_reglas": [],
+      "evento_automatizacion": "BLOQUEAR_COBRO_EFECTIVO_ART32"
+    }
+  ]
+}

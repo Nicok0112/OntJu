@@ -1,0 +1,16 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+.env
+.env.example
+.env.example:2
+backend/data/oxigraph_db/
+
+# Node / Next.js
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+.DS_Store

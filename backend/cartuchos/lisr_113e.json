@@ -1,0 +1,126 @@
+{
+  "fuente": {
+    "ordenamiento": "LISR",
+    "articulo": "113-E",
+    "fraccion": "I",
+    "jerarquia": "04_LEY_FEDERAL",
+    "jurisdiccion": "FEDERAL",
+    "vigente_desde": "2022-01-01",
+    "vigente_hasta": null
+  },
+  "reglas": [
+    {
+      "rule_id": "LISR_113E_ELEGIBILIDAD",
+      "descripcion": "Persona física con actividad empresarial, profesional o arrendamiento e ingresos <= $3,500,000 MXN puede tributar en RESICO",
+      "modalidad": "QUALIFICATION",
+      "sujeto_activo": "?p",
+      "sujeto_pasivo": "?sat",
+      "condiciones_and": [
+        {
+          "sujeto": "?p",
+          "propiedad": "rdf:type",
+          "operador": "==",
+          "valor": "legal:PersonaFisica"
+        },
+        {
+          "sujeto": "?p",
+          "propiedad": "fiscal:actividad",
+          "operador": "IN",
+          "valor": [
+            "EMPRESARIAL",
+            "PROFESIONAL",
+            "ARRENDAMIENTO"
+          ]
+        },
+        {
+          "sujeto": "?p",
+          "propiedad": "fiscal:ingresosEjercicioAnterior",
+          "operador": "<=",
+          "valor": 3500000,
+          "unidad": "MXN"
+        }
+      ],
+      "excepciones_unless": [
+        {
+          "sujeto": "?p",
+          "propiedad": "fiscal:excluidoRESICO",
+          "operador": "==",
+          "valor": true
+        }
+      ],
+      "consecuencia": {
+        "sujeto": "?p",
+        "propiedad": "fiscal:elegibleRegimen",
+        "operador": "==",
+        "valor": "RESICO"
+      },
+      "anula_reglas": [],
+      "evento_automatizacion": "NOTIFICAR_ELEGIBILIDAD_RESICO"
+    },
+    {
+      "rule_id": "LISR_113E_EXCLUSION_SOCIO",
+      "descripcion": "No pueden aplicar RESICO quienes sean socios o accionistas de personas morales",
+      "modalidad": "PROHIBITION",
+      "sujeto_activo": "?p",
+      "sujeto_pasivo": "?sat",
+      "condiciones_and": [
+        {
+          "sujeto": "?p",
+          "propiedad": "corporativo:esSocioDe",
+          "operador": "EXISTS",
+          "valor": "?pm"
+        }
+      ],
+      "excepciones_unless": [
+        {
+          "sujeto": "?pm",
+          "propiedad": "fiscal:excepcionSocioRESICO",
+          "operador": "==",
+          "valor": true
+        }
+      ],
+      "consecuencia": {
+        "sujeto": "?p",
+        "propiedad": "fiscal:excluidoRESICO",
+        "operador": "==",
+        "valor": true
+      },
+      "anula_reglas": [
+        "LISR_113E_ELEGIBILIDAD"
+      ],
+      "evento_automatizacion": "ALERTA_CAUSAL_SALIDA_RESICO"
+    },
+    {
+      "rule_id": "LISR_113E_F1_COOPERATIVA",
+      "descripcion": "Se exceptúan los socios de sociedades cooperativas de producción integradas únicamente por personas físicas",
+      "modalidad": "EXEMPTION",
+      "sujeto_activo": "?pm",
+      "sujeto_pasivo": null,
+      "condiciones_and": [
+        {
+          "sujeto": "?pm",
+          "propiedad": "corporativo:tipoSociedad",
+          "operador": "==",
+          "valor": "SOCIEDAD_COOPERATIVA_PRODUCCION"
+        },
+        {
+          "sujeto": "?pm",
+          "propiedad": "corporativo:soloSociosPersonasFisicas",
+          "operador": "==",
+          "valor": true
+        }
+      ],
+      "excepciones_unless": [],
+      "consecuencia": {
+        "sujeto": "?pm",
+        "propiedad": "fiscal:excepcionSocioRESICO",
+        "operador": "==",
+        "valor": true
+      },
+      "anula_reglas": [
+        "LISR_113E_EXCLUSION_SOCIO"
+      ],
+      "evento_automatizacion": null
+    }
+  ]
+}

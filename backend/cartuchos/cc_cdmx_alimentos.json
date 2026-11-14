@@ -1,0 +1,138 @@
+{
+  "fuente": {
+    "ordenamiento": "CC_CDMX",
+    "articulo": "303 / 320",
+    "fraccion": "II",
+    "jerarquia": "05_CODIGO",
+    "jurisdiccion": "CDMX",
+    "vigente_desde": "2020-01-01",
+    "vigente_hasta": null
+  },
+  "reglas": [
+    {
+      "rule_id": "FAM_303_OBLIGACION_ALIMENTOS",
+      "descripcion": "Los padres están obligados a dar alimentos a sus hijos",
+      "modalidad": "OBLIGATION",
+      "sujeto_activo": "?padre",
+      "sujeto_pasivo": "?hijo",
+      "condiciones_and": [
+        {
+          "sujeto": "?hijo",
+          "propiedad": "familiar:esHijoDe",
+          "operador": "EXISTS",
+          "valor": "?padre"
+        }
+      ],
+      "excepciones_unless": [
+        {
+          "sujeto": "?hijo",
+          "propiedad": "familiar:obligacionSuspendida",
+          "operador": "==",
+          "valor": true
+        }
+      ],
+      "consecuencia": {
+        "sujeto": "?padre",
+        "propiedad": "familiar:deudorAlimentarioDe",
+        "operador": "==",
+        "valor": "?hijo"
+      },
+      "anula_reglas": [],
+      "evento_automatizacion": "NOTIFICAR_OBLIGACION_ALIMENTARIA"
+    },
+    {
+      "rule_id": "FAM_320_CESE_MAYORIA_EDAD",
+      "descripcion": "Cesa la obligación cuando el acreedor cumple 18 años sin causal de subsistencia",
+      "modalidad": "EXEMPTION",
+      "sujeto_activo": "?hijo",
+      "sujeto_pasivo": null,
+      "condiciones_and": [
+        {
+          "sujeto": "?hijo",
+          "propiedad": "familiar:edadAnios",
+          "operador": ">=",
+          "valor": 18,
+          "unidad": "ANIOS"
+        }
+      ],
+      "excepciones_unless": [
+        {
+          "sujeto": "?hijo",
+          "propiedad": "familiar:subsistePorEstudiosODiscapacidad",
+          "operador": "==",
+          "valor": true
+        }
+      ],
+      "consecuencia": {
+        "sujeto": "?hijo",
+        "propiedad": "familiar:obligacionSuspendida",
+        "operador": "==",
+        "valor": true
+      },
+      "anula_reglas": ["FAM_303_OBLIGACION_ALIMENTOS"],
+      "evento_automatizacion": "ALERTA_CAUSAL_CESE_ALIMENTOS"
+    },
+    {
+      "rule_id": "FAM_CONTRAEXCEPCION_ESTUDIOS",
+      "descripcion": "Subsiste el derecho a alimentos si el hijo mayor estudia un grado acorde a su edad",
+      "modalidad": "QUALIFICATION",
+      "sujeto_activo": "?hijo",
+      "sujeto_pasivo": null,
+      "condiciones_and": [
+        {
+          "sujeto": "?hijo",
+          "propiedad": "familiar:edadAnios",
+          "operador": ">=",
+          "valor": 18,
+          "unidad": "ANIOS"
+        },
+        {
+          "sujeto": "?hijo",
+          "propiedad": "familiar:estudiaGradoAcorde",
+          "operador": "==",
+          "valor": true
+        }
+      ],
+      "excepciones_unless": [],
+      "consecuencia": {
+        "sujeto": "?hijo",
+        "propiedad": "familiar:subsistePorEstudiosODiscapacidad",
+        "operador": "==",
+        "valor": true
+      },
+      "anula_reglas": ["FAM_320_CESE_MAYORIA_EDAD"],
+      "evento_automatizacion": null
+    },
+    {
+      "rule_id": "FAM_CONTRAEXCEPCION_DISCAPACIDAD",
+      "descripcion": "Subsiste el derecho a alimentos si el hijo mayor presenta discapacidad",
+      "modalidad": "QUALIFICATION",
+      "sujeto_activo": "?hijo",
+      "sujeto_pasivo": null,
+      "condiciones_and": [
+        {
+          "sujeto": "?hijo",
+          "propiedad": "familiar:edadAnios",
+          "operador": ">=",
+          "valor": 18,
+          "unidad": "ANIOS"
+        },
+        {
+          "sujeto": "?hijo",
+          "propiedad": "familiar:tieneDiscapacidad",
+          "operador": "==",
+          "valor": true
+        }
+      ],
+      "excepciones_unless": [],
+      "consecuencia": {
+        "sujeto": "?hijo",
+        "propiedad": "familiar:subsistePorEstudiosODiscapacidad",
+        "operador": "==",
+        "valor": true
+      },
+      "anula_reglas": ["FAM_320_CESE_MAYORIA_EDAD"],
+      "evento_automatizacion": null
+    }
+  ]
+}
